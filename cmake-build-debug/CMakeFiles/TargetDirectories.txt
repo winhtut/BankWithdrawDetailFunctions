@@ -1,0 +1,3 @@
+/Users/ncc/CLionProjects/BankV-4/cmake-build-debug/CMakeFiles/BankV_4.dir
+/Users/ncc/CLionProjects/BankV-4/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/ncc/CLionProjects/BankV-4/cmake-build-debug/CMakeFiles/rebuild_cache.dir
