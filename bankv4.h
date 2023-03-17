@@ -10,13 +10,15 @@
 #define AAA 19
 //#include "user_setting.h"
 #define USERSIZE 1000
-#define DATA_COUNT 20
+#define DATA_COUNT 30
 
 //Global Variable
 
 int G_index=0; // for user counting
 int email_found = -1; // for checking email exist
 int space_array[DATA_COUNT];
+int withdraw_array[DATA_COUNT];
+
 int email_valid=-1;
 int nrc_valid=-1;
 int two_charArray=-1;
@@ -94,6 +96,10 @@ void calculate_time_dif(char last__month[3],unsigned int last__day,unsigned int 
 struct trans{
     char note[200];
 };
+
+struct draw{
+    char note[200];
+};
 struct info{
 
     unsigned int id;
@@ -118,6 +124,9 @@ struct info{
     int trans_amount_limit_perday;
 
     struct trans tr[300]; //transaction//>>
+
+    struct draw wd[300];
+
 
     // %u%s%s%s%s%u%s%s%s%d%d%d%s%llu%s%u%u%f%s
 
@@ -604,23 +613,45 @@ int char_counting(char my_char[50]){
 
 void space_counter(){
 
+    int hashFound=-1;
     FILE *fptr = fopen("encrypted_data.txt","r");
 
     if(fptr != NULL){
 
         char c = fgetc(fptr);
         int index=0;
+        int with_index=0;
 
         while (!feof(fptr)){
 
             if(c !='\n'){
                 if(c == ' '){
-                    space_array[index] +=1;
+                    if(hashFound==-1) {
+                        space_array[index] += 1;
+                    }
                 }
                 c = fgetc(fptr);
+                if(c=='#'){
+                    hashFound=1;
+
+                    c = fgetc(fptr);
+                    while (c!='\n' ){
+
+                            if(c ==' '){
+                                //space_array[index] -=1;
+                                withdraw_array[with_index] +=1;
+
+                            }
+                            c = fgetc(fptr);
+
+                    }
+
+                }
             } else{
 
+                hashFound=-1;
                 index++;
+                with_index++;
                 c = fgetc(fptr);
             }
 
@@ -634,6 +665,11 @@ void space_counter(){
     for(int i=0; i<DATA_COUNT ; i++){
 
         printf(" %d",space_array[i]);
+    }
+    printf("\n");
+
+    for(int a=0; a<DATA_COUNT; a++){
+        printf(" %d",withdraw_array[a]);
     }
     printf("\n");
 
@@ -1312,6 +1348,9 @@ void printing_all_data() {
         for (int gcc = 0; gcc <= space_array[user] - 20; gcc++) {
             printf("-%s", db[user].tr[gcc].note);
         }
+        for (int aw=0; aw<=withdraw_array[user]; aw++){
+            printf("-%s",db[user].wd[aw].note);
+        }
         printf("\n");
 
     }
@@ -1330,6 +1369,11 @@ void loading_from_file(){
             for(register int trc=0; trc<= space_array[user]-20 ; trc++ ){
                 fscanf(fptr , "%s",&db[user].tr[trc].note[0]);
             }
+
+            for(register int aw=0; aw<withdraw_array[user];aw++){
+                fscanf(fptr,"%s",&db[user].wd[aw].note[0]);
+            }
+
             if(db[user].id == 0){
                 break;
             }
@@ -1417,5 +1461,12 @@ int total_money_for_same_days(int transmit,int last_day){
 }
 
 
+void withdraw_record(int user_index,unsigned int amount){
+
+
+
+
+
+}
 
 #endif //ONLINEBANKPJ_ONLINEBANK_H
